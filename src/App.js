@@ -16,18 +16,8 @@ class App extends Component {
         $.ajax({
             type: "GET",
             url: "https://serene-escarpment-62053.herokuapp.com/books",
-            // url: 'https://www.googleapis.com/books/v1/volumes?q=javascript',
             dataType: "json",
             success:  (data) =>{
-                // let books = [];
-                // for (let i = 0; i < json.items.length; i++)
-                // {
-                //     books.push({id:json.items[i].id,
-                //                 authorName:json.items[i].volumeInfo.authors[0],
-                //                 publishedDate:json.items[i].volumeInfo.publishedDate,
-                //                 title:json.items[i].volumeInfo.title})
-                // }
-
                 this.setState({books:data.books});
                 },
             error: function () {
@@ -37,41 +27,32 @@ class App extends Component {
     }
 
     update=(id,authorName,title,publishedDate)=>{
-        let books = this.state.books;
-        for(let i=0 ; i<books.length ; i++){
-            if(books[i].id === id){
-                books[i].authorName = authorName;
-                books[i].publishedDate = publishedDate;
-                books[i].title = title;
-                break;
+        $.ajax({
+            type: "PUT",
+            url: "https://serene-escarpment-62053.herokuapp.com/books/" + id,
+            dataType: "json",
+            data: {authorName,title,publishedDate},
+            success:  () =>{
+                this.message.innerHTML = "book updated successfully";
+                setTimeout(this.clearMessage,2000);
+                $.ajax({
+                    type: "GET",
+                    url: "https://serene-escarpment-62053.herokuapp.com/books",
+                    dataType: "json",
+                    success:  (data) =>{
+                        this.setState({books:data.books})
+                    },
+                    error: function () {
+                        this.message.innerHTML = "error occurred";
+                        setTimeout(this.clearMessage,2000);
+                    }
+                });
+            },
+            error: function () {
+                this.message.innerHTML = "error occurred";
+                setTimeout(this.clearMessage,2000);
             }
-        }
-        // $.ajax({
-        //     type: "PUT",
-        //     url: "https://shielded-everglades-61630.herokuapp.com/books/" + id,
-        //     dataType: "json",
-        //     data: {authorName,title,publishedDate},
-        //     success:  () =>{
-        //         this.message.innerHTML = "book updated successfully";
-        //         setTimeout(this.clearMessage,2000);
-        //         $.ajax({
-        //             type: "GET",
-        //             url: "http://localhost:4000/books",
-        //             dataType: "json",
-        //             success:  (data) =>{
-        //                 this.setState({books:data.books})
-        //             },
-        //             error: function () {
-        //                 this.message.innerHTML = "error occurred";
-        //                 setTimeout(this.clearMessage,2000);
-        //             }
-        //         });
-        //     },
-        //     error: function () {
-        //         this.message.innerHTML = "error occurred";
-        //         setTimeout(this.clearMessage,2000);
-        //     }
-        // });
+        });
     }
 
     add=(authorName,title,publishedDate)=>{
@@ -79,7 +60,7 @@ class App extends Component {
         books.push({})
         $.ajax({
             type: "POST",
-            url: "https://shielded-everglades-61630.herokuapp.com/books/",
+            url: "https://serene-escarpment-62053.herokuapp.com/books/",
             dataType: "json",
             data: {authorName,title,publishedDate},
             success:  () =>{
@@ -87,7 +68,7 @@ class App extends Component {
                 setTimeout(this.clearMessage,2000);
                 $.ajax({
                     type: "GET",
-                    url: "https://shielded-everglades-61630.herokuapp.com/books",
+                    url: "https://serene-escarpment-62053.herokuapp.com/books",
                     dataType: "json",
                     success:  (data) =>{
                         this.setState({books:data.books})
@@ -108,7 +89,7 @@ class App extends Component {
     delete=(id)=>{
         $.ajax({
             type: "DELETE",
-            url: "https://shielded-everglades-61630.herokuapp.com/books/" + id,
+            url: "https://serene-escarpment-62053.herokuapp.com/books/" + id,
             dataType: "json",
             data: {id},
             success:  () =>{
@@ -116,7 +97,7 @@ class App extends Component {
                 setTimeout(this.clearMessage,2000);
                 $.ajax({
                     type: "GET",
-                    url: "https://shielded-everglades-61630.herokuapp.com/books",
+                    url: "https://serene-escarpment-62053.herokuapp.com/books",
                     dataType: "json",
                     success:  (data) =>{
                         this.setState({books:data.books})
